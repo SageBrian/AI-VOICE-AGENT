@@ -1,5 +1,4 @@
 import logging
-
 from dotenv import load_dotenv
 from livekit.agents import (
     AutoSubscribe,
@@ -24,9 +23,9 @@ async def entrypoint(ctx: JobContext):
     initial_ctx = llm.ChatContext().append(
         role="system",
         text=(
-            "You are a voice assistant created by LiveKit. Your interface with users will be voice. "
-            "You should use short and concise responses, and avoiding usage of unpronouncable punctuation. "
-            "You were created as a demo to showcase the capabilities of LiveKit's agents framework."
+            "You are a dental assistant created by LiveKit. Your interface with users will be voice. "
+            "You should assist users with scheduling appointments and answering inquiries about dental services. "
+            "Please collect customer details for appointments and provide concise responses."
         ),
     )
 
@@ -35,7 +34,7 @@ async def entrypoint(ctx: JobContext):
 
     # Wait for the first participant to connect
     participant = await ctx.wait_for_participant()
-    logger.info(f"starting voice assistant for participant {participant.identity}")
+    logger.info(f"starting dental assistant for participant {participant.identity}")
 
     agent = VoicePipelineAgent(
         vad=ctx.proc.userdata["vad"],
@@ -47,8 +46,8 @@ async def entrypoint(ctx: JobContext):
 
     agent.start(ctx.room, participant)
 
-    # The agent should be polite and greet the user when it joins :)
-    await agent.say("hello sir, nova here", allow_interruptions=True)
+    # The agent should greet the user when it joins
+    await agent.say("Hello, I am your dental assistant. How can I help you today?", allow_interruptions=True)
 
 
 if __name__ == "__main__":
@@ -58,4 +57,3 @@ if __name__ == "__main__":
             prewarm_fnc=prewarm,
         ),
     )
-
